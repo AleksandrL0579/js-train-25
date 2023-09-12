@@ -9,6 +9,15 @@ function fetchFakeData() {
   return Promise.resolve(fakeData);
 }
 
+async function getData() {
+  try {
+    const data = await fetchFakeData();
+    console.log(data);
+  } catch (error) {
+    console.error("Помилка:", error);
+  }
+}
+
 // Створюємо асинхронну функцію getData, яка використовує await для обробки Promise.
 // Використовуємо try для обробки помилок
 // Використовуємо await для очікування виконання Promise.
@@ -16,9 +25,9 @@ function fetchFakeData() {
 // Використовуємо catch для обробки будь-яких помилок, що виникли під час виконання Promise, та виводимо їх в консоль.
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 1 ==============================");
+console.log("Завдання: 1 ==============================");
 // // Викликаємо нашу асинхронну функцію.
-// getData();
+getData();
 
 //Завдання 2
 // Функція getRandomNumberAfterSeconds, яка приймає один параметр - число секунд.
@@ -32,6 +41,14 @@ function getRandomNumberAfterSeconds(seconds) {
     }, seconds * 1000);
   });
 }
+async function logRandomNumberAfterSeconds(seconds) {
+  try {
+    const randomNumber = await getRandomNumberAfterSeconds(seconds);
+    console.log(randomNumber);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // Асинхронна функція logRandomNumberAfterSeconds, яка приймає один параметр - число секунд
 // Використовуємо try для обробки помилок
@@ -42,10 +59,22 @@ function getRandomNumberAfterSeconds(seconds) {
 // Якщо сталася помилка під час виконання Promise, виводимо її в консоль.
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 2 ==============================");
-// logRandomNumberAfterSeconds();
+console.log("Завдання: 2 ==============================");
+logRandomNumberAfterSeconds();
 
 //Завдання 3
+async function getDataFromUrl(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Помилка отримання даних: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(`Сталася помилка: ${error.message}`);
+  }
+}
 // Асинхронна функція getDataFromUrl, яка приймає один параметр - URL
 // Використовуємо try для обробки помилок
 // Використовуємо fetch для відправки GET-запиту на вказаний URL
@@ -58,10 +87,32 @@ function getRandomNumberAfterSeconds(seconds) {
 // Виводимо помилки в консоль якщо вони є
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 3 ==============================");
-// getDataFromUrl("https://swapi.dev/api/people/1");
+console.log("Завдання: 3 ==============================");
+getDataFromUrl("https://swapi.dev/api/people/1");
 
 //Завдання 4
+async function postDataWithAuth(url, data, authToken) {
+  try {
+    const jsonData = JSON.stringify(data);
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      body: jsonData,
+    };
+    const response = await fetch(url, requestOptions);
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log("Відповідь сервера:", responseData);
+    } else {
+      console.error("Помилка при виконанні POST-запиту:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Помилка при виконанні POST-запиту:", error);
+  }
+}
 // Асинхронна функція, яка приймає три параметри - URL, дані для відправки та токен авторизації, маємо аргумент url, data, authToken
 // Використовуємо try для обробки помилок
 // Використовуємо fetch для відправки POST-запиту на вказаний URL
@@ -79,21 +130,36 @@ function getRandomNumberAfterSeconds(seconds) {
 // Виводимо помилки в консоль якщо вони є
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 4 ==============================");
-// postDataWithAuth(
-//   "https://petstore.swagger.io/v2/store/order",
-//   {
-//     id: 0,
-//     petId: 0,
-//     quantity: 0,
-//     shipDate: "2023-07-23T19:28:06.229Z",
-//     status: "placed",
-//     complete: true,
-//   },
-//   "fsdodfa8sdg76adtf687ya8rufia8d7fasy6g"
-// );
+console.log("Завдання: 4 ==============================");
+postDataWithAuth(
+  "https://petstore.swagger.io/v2/store/order",
+  {
+    id: 0,
+    petId: 0,
+    quantity: 0,
+    shipDate: "2023-07-23T19:28:06.229Z",
+    status: "placed",
+    complete: true,
+  },
+  "fsdodfa8sdg76adtf687ya8rufia8d7fasy6g"
+);
 
 //Завдання 5
+async function* asyncGenerator() {
+  let i = 0;
+  while (true) {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Затримка 1 секунда
+    yield i++;
+  }
+}
+
+async function printFiveItems() {
+  const gen = asyncGenerator();
+  for await (const value of gen) {
+    console.log(value);
+    if (value === 4) break;
+  }
+}
 // Створюємо асинхронний генератор asyncGenerator, який виробляє числа з паузою в одну секунду.
 // "async function*" означає, що це асинхронний генератор.
 // Змінна "i" ініціалізована значенням 0 і буде збільшуватися на 1 при кожній ітерації.
@@ -110,12 +176,11 @@ function getRandomNumberAfterSeconds(seconds) {
 // Умова "if (value === 4) break" зупиняє цикл після виведення п'яти чисел (від 0 до 4).
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 5 ==============================");
-// printFiveItems();
+console.log("Завдання: 5 ==============================");
+printFiveItems();
 
 //Завдання 6
 
-// Функція, яка симулює витягування даних з бази даних
 async function getDataFromDB() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -123,8 +188,6 @@ async function getDataFromDB() {
     }, 1000);
   });
 }
-
-// Функція, яка симулює отримання даних з API
 async function getDataFromAPI() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -132,14 +195,34 @@ async function getDataFromAPI() {
     }, 800);
   });
 }
-
-// Функція, яка симулює отримання даних з кешу
 async function getDataFromCache() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve("Дані з кешу");
     }, 600);
   });
+}
+async function* gatherData() {
+  try {
+    const dbData = await getDataFromDB();
+    yield dbData;
+
+    const apiData = await getDataFromAPI();
+    yield apiData;
+
+    const cacheData = await getDataFromCache();
+    yield cacheData;
+  } catch (error) {
+    console.error("Помилка:", error);
+  }
+}
+
+async function displayData() {
+  const dataGenerator = gatherData();
+
+  for await (const data of dataGenerator) {
+    console.log(data);
+  }
 }
 
 // Оголошуємо асинхронну функцію-генератор з ім'ям gatherData
@@ -159,11 +242,20 @@ async function getDataFromCache() {
 // Три рази виводимо виводимо поточне значення генератора в консоль
 
 // Розкоментуйте після виконання завданння
-// console.log("Завдання: 6 ==============================");
+console.log("Завдання: 6 ==============================");
 
-// displayData();
+displayData();
 
 //Завдання 7
+function* countdownGenerator(start) {
+  let count = start;
+  while (count >= 0) {
+    yield count;
+    count--;
+  }
+}
+const countdown = countdownGenerator(5);
+let nextValue = countdown.next();
 // Створюємо генератор countdownGenerator, який створює послідовність чисел від вказаного значення до 0, має параметр start
 // Ініціюємо лічильник змінну count зі стартовим значенням параметра start
 
@@ -172,7 +264,11 @@ async function getDataFromCache() {
 
 // Зменшуємо лічильник на 1
 
-// console.log("Завдання: 7 ==============================");
+console.log("Завдання: 7 ==============================");
+while (!nextValue.done) {
+  console.log(nextValue.value);
+  nextValue = countdown.next();
+}
 // Створюємо екземпляр генератора countdown з лічильниковм 5
 
 // Запускаємо генератор та отримуємо перше значення яку записуємо в змінну nextValue
